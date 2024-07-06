@@ -214,7 +214,7 @@ def retrieval_page():
 
 
 def main():
-    st.title('Image Finder')
+    st.title('Photo Album Search Demo')
     footer = """
      <style>
      .footer {
