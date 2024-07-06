@@ -81,15 +81,17 @@ def add_new_descr_to_embedding_pickle(embeddings_obj, pickle_file, descriptions,
             existing_embeddings = pickle.load(file)
     else:
         existing_embeddings = []
-    print(len(existing_embeddings))
+
     if type(descriptions) == str:
         descriptions = [descriptions]
+
     new_rows = []
     for descr in descriptions:
         new_row = create_single_embedding(embeddings_obj, descr)
         new_rows.append(new_row)
 
     new_rows = np.array(new_rows).astype('float32')
+
     if create_new:
         new_embeddings = new_rows
     else:
@@ -104,13 +106,14 @@ def create_single_embedding(embeddings_obj, description):
 
 
 def query_for_related_descriptions(api_key, query, embeddings_pickle_file, images_dir, k=10):
-
     json_descr_filepath = get_descr_filepath(images_dir)
     json_dict = retrieve_contents_from_json(json_descr_filepath)
     
     file_names = list(json_dict.keys())
     descriptions = list(json_dict.values())
+
     embeddings_obj = OpenAIEmbeddings(api_key=api_key)
+
     if not os.path.exists(embeddings_pickle_file):
         add_new_descr_to_embedding_pickle(embeddings_obj, embeddings_pickle_file, descriptions, create_new=True)
 
@@ -127,15 +130,13 @@ def query_for_related_descriptions(api_key, query, embeddings_pickle_file, image
     distances, indices = index.search(query_embedding, k)
 
     images_ranked = np.array(file_names)[indices]
-    #search_ouput = np.array(descriptions)[indices] NOTE: for looking at ranking results
-    #print(search_ouput)
-    #print(images_ranked)
     return images_ranked
 
 
 def query_and_filter(api_key, embeddings_pickle_file, descriptions_dict, query, filter):
     file_names = list(descriptions_dict.keys())
     descriptions = list(descriptions_dict.values())
+
     embeddings_obj = OpenAIEmbeddings(api_key=api_key)
 
     k = int(len(descriptions) * filter)
@@ -150,8 +151,7 @@ def query_and_filter(api_key, embeddings_pickle_file, descriptions_dict, query, 
 
     images_ranked = np.array(file_names)[indices]
     search_ouput = np.array(descriptions)[indices]
-    #print(search_ouput)
-    #print(images_ranked)
+
     return images_ranked
 
 
@@ -162,7 +162,7 @@ def rank_and_filter_descriptions(api_key, descriptions_dict, prompt, filter=1.0)
     """
     if filter > 1.0 or filter <= 0.0:
         filter = 1
-    #t_s = time.perf_counter()
+
     pickle_file = os.path.join(EMBEDDINGS_DIR, api_key[-5:] + ".pkl")
     if not os.path.exists(pickle_file):
         assert False, "rank_and_filter_descriptions: no pickle file "
@@ -172,10 +172,8 @@ def rank_and_filter_descriptions(api_key, descriptions_dict, prompt, filter=1.0)
     filtered_descr_dict = dict()
     for img in list(filtered_images):
         filtered_descr_dict[img] = descriptions_dict[img]
-    #t_e = time.perf_counter()
-    #print(f'embed time: {t_e - t_s}')
+
     return filtered_descr_dict
-    #TODO: still need to return iin ranked form -> cant use dictionary
 
 
 def get_embeddings_from_pickle_file(pickle_file):

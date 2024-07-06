@@ -19,7 +19,6 @@ MODELS = [
     "gpt-4",
     "gpt-4-1106-preview", #*Most used
     "gpt-4o"
-    #'gpt-4-turbo-2024-04-09', same as base turbo?
 ]
 
 
@@ -95,7 +94,9 @@ def handle_faulty_response_format(res):
 
 def retrieve_and_return(image_descriptions_file, retrieval_prompt, api_key, filter=0.1, return_filter=False):
     client = OpenAI(api_key=api_key)
+
     image_descriptions: dict = retrieve_contents_from_json(image_descriptions_file)
+
     if len(image_descriptions) * filter < 5.0:
         filter = 0.5 #TODO: optimize for any amount of images/any filter
     if filter is not None:
@@ -127,10 +128,10 @@ def retrieve_and_return(image_descriptions_file, retrieval_prompt, api_key, filt
     except SyntaxError:
         print("SyntaxError: The response string contains a syntax error.")
         formatted_output = handle_faulty_response_format(res)
-        print(type(res))
-        print(res)
+        print(type(res), res)
         print("NEW OUT")
         print(formatted_output)
+
         if type(formatted_output) == list: #TODO: needed?
             output_images = []
             for s in formatted_output:
