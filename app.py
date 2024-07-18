@@ -33,6 +33,7 @@ def send_request(prompt):
             images_dir = st.session_state.images_dir
             base_name = os.path.basename(images_dir)
             base_dir = os.path.dirname(os.path.dirname(images_dir))
+
             descriptions_folder_path = os.path.join(base_dir, 'json')
             json_file_path = os.path.join(descriptions_folder_path, base_name + JSON_DESCR_SUFFIX)
             if not os.path.exists(json_file_path):
@@ -67,12 +68,11 @@ def user_folder_exists_local(api_key):
     folder_name = create_image_dir_name(api_key)
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     image_base_dir = os.path.join(curr_dir, 'image_base')
+
     for f in os.listdir(image_base_dir):
         if f == folder_name:
             st.session_state.images_dir = os.path.join(image_base_dir, folder_name)
-            print('user_folder_exists_loca: True')
             return True
-    print('user_folder_exists_loca: False')
     return False
 
 
@@ -104,7 +104,8 @@ def resize_image(image, fixed_height=200):
 
 def create_images_dict(images_dir):
     names_and_images = {}
-    image_paths = [os.path.join(st.session_state.images_dir, img) for img in os.listdir(images_dir) if img.endswith((".png", ".jpg", ".jpeg"))]
+    image_paths = [os.path.join(st.session_state.images_dir, img)
+                       for img in os.listdir(images_dir) if img.endswith((".png", ".jpg", ".jpeg"))]
 
     for img_path in image_paths:
         opened_img = Image.open(img_path)
@@ -132,7 +133,10 @@ def retrieval_page():
     with st.form('prompt_submission'):
         text_input_col, submit_btn_col = st.columns([5, 1])
         with text_input_col:
-            user_input = st.text_input(label="why is this required", label_visibility='collapsed', key="user_input", placeholder="What would you like to find?")
+            user_input = st.text_input(label="why is this required",
+                                       label_visibility='collapsed',
+                                       key="user_input",
+                                       placeholder="What would you like to find?")
 
         with submit_btn_col:
             submit_button = st.form_submit_button(label='Send')
@@ -142,15 +146,16 @@ def retrieval_page():
         #sort by embeddings before sending request
         basename = os.path.basename(images_dir)
         embeddings_pickle_file = os.path.join(EMBEDDINGS_DIR, basename + '.pkl')
-        t_start = time.perf_counter()
+
         images_ranked = query_for_related_descriptions(api_key, user_input, embeddings_pickle_file, images_dir, k=0)
+
         print('\n------------------------------NEW SEARCH------------------------------')
+
         if len(images_ranked[0]) > 1:
             st.session_state.images_ranked = images_ranked[0].tolist()
-            st.session_state.all_images = [os.path.join(st.session_state.images_dir, img) for img in st.session_state.images_ranked]
+            st.session_state.all_images = [os.path.join(st.session_state.images_dir, img)
+                                               for img in st.session_state.images_ranked]
 
-        t_end = time.perf_counter()
-        print(f"Embeddings Ranking Time: {round(t_end - t_start, 2)}s")
         send_request(user_input)
 
     #display images before first submission
@@ -182,16 +187,18 @@ def retrieval_page():
 
     for i in range(0, len(st.session_state.search_result_images), 2):
         col1, col2 = st.columns(2)
+
         res_img = st.session_state.name_and_image_dict[st.session_state.search_result_images[i]]
         col1.image(res_img, use_column_width=True, caption="top result")
         
-        if i + 1 < len(st.session_state.search_result_images): #TODO: handle when appending non results
+        if i + 1 < len(st.session_state.search_result_images):
             res_img = st.session_state.name_and_image_dict[st.session_state.search_result_images[i+1]]
             col2.image(res_img, use_column_width=True, caption='top result')
 
     #display rest of images in ranked order
     if not st.session_state.init_display_images:
-        remaining_images = [img for img in st.session_state.all_images if img not in st.session_state.search_result_images]
+        remaining_images = [img for img in st.session_state.all_images
+                                if img not in st.session_state.search_result_images]
     else:
         remaining_images = []
     
@@ -214,23 +221,23 @@ def retrieval_page():
 
 
 def main():
-    st.title('Photo Album Search Demo')
+    st.title('PhotoFind Public Demo')
     footer = """
-     <style>
-     .footer {
-     position: fixed;
-     left: 0;
-     bottom: 0;
-     width: 100%;
-     background-color: #111;
-     color: white;
-     text-align: center;
-     }
-     </style>
-     <div class="footer">
-     <p>By Cade Hutcheson</p>
-     </div>
-     """
+        <style>
+            .footer {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                background-color: #111;
+                color: white;
+                text-align: center;
+            }
+        </style>
+        <div class="footer">
+            <p>By Cade Hutcheson</p>
+        </div>
+    """
     st.markdown(footer, unsafe_allow_html=True)
 
     retrieval_page()
@@ -248,7 +255,8 @@ def make_st_vars():
         st.session_state.all_images = []
 
     if 'images_dir' not in st.session_state:
-        st.session_state.images_dir = os.path.join(IMAGE_BASE_DIR, create_image_dir_name(st.session_state.user_openai_api_key))
+        key_dirname = create_image_dir_name(st.session_state.user_openai_api_key)
+        st.session_state.images_dir = os.path.join(IMAGE_BASE_DIR, key_dirname)
 
     if 'images_ranked' not in st.session_state:
         st.session_state.images_ranked  = []
