@@ -1,11 +1,11 @@
-**Semantic Search Tool for Photo Albums**
+**PhotoFind: Semantic Search Tool for Photo Albums**
 
 A description-based search tool for finding images within a photo album.
 
-This repo is a simplified version of the full tool for demonstrating the search capabilities on a sample collection of images. The demo repo for the complete tool can be found [here](https://github.com/cade-hutch/image_finder_demo).
+This repo is a simplified version of the full tool for demonstrating the search capabilities on a sample collection of images. The demo repo for the complete tool can be found [here](https://github.com/cade-hutch/photo-find).
 
 STEP 1:
-Go to [album-search-public-demo.streamlit.app](https://album-search-public-demo.streamlit.app/). Wait for the images to load.
+Go to [photo-find-public-demo.streamlit.app](https://photo-find-public-demo.streamlit.app/). Wait for the images to load.
 
 STEP 2:
 Browse through the images and find one you would like to search for, or use the randomly selected image displayed within the left sidebar as the search subject.
