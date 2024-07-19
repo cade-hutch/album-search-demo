@@ -90,6 +90,12 @@ def handle_faulty_response_format(res):
 
 
 def retrieve_and_return(image_descriptions_file, retrieval_prompt, api_key, filter=0.1, return_filter=False):
+    """
+    Send OpenAI api request -- find the image description(s) the user is searching for.
+
+    filter(float): The fraction of top ranking descriptions to send to the model
+    return_filter(bool): Return the filtered descriptions that were sent -- Used for testing
+    """
     client = OpenAI(api_key=api_key)
 
     image_descriptions: dict = retrieve_contents_from_json(image_descriptions_file)
