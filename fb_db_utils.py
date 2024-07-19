@@ -35,7 +35,6 @@ except ValueError:
     print('firebase initialized')
 
 
-#**.stream() method, slightly faster than get_data()??**
 def read_data(db, user_id):
     query_logs_ref = db.collection('logs').document(user_id).collection('query_logs')
     docs = query_logs_ref.stream()
@@ -46,7 +45,6 @@ def read_data(db, user_id):
     return doc_dicts
 
 
-#**.stream() method, better than get_data()??**
 def print_data(user_id):
     db = firestore.client()
 
@@ -97,7 +95,6 @@ def get_number_of_queries(user_id):
     return len(read_data(db, user_id))
 
 
-# Get the database client
 def firebase_store_query_log(user_id, logging_entry, db=None):
     if not db:
         db = firestore.client()

@@ -17,7 +17,7 @@ MODELS = [
     "gpt-3.5-turbo-0125",
     "gpt-4-turbo",
     "gpt-4",
-    "gpt-4-1106-preview", #*Most used
+    "gpt-4-1106-preview",
     "gpt-4o"
 ]
 
@@ -53,7 +53,6 @@ def handle_faulty_response_format(res):
         res_list = json.loads(clean_res)
 
     if not res_list and "- " in res: #handle dashed list
-        print("trying format fix 2")
         lines = res.split('\n')
         file_names = []
 
@@ -69,12 +68,11 @@ def handle_faulty_response_format(res):
     elif not res_list: #handle plaintext or with []
         if type(res) == str:
             #TODO: how often is this used now?
-            print('trying format fix 2.5')
             extract_pattern = re.compile(r"(?:^|[\s\"'])([^\"'\s]+)\.png")
             res_list = extract_pattern.findall(res)
+
             return [s + '.png' for s in res_list]
 
-        print("trying format fix 3")
         #remove the surrounding brackets and strip whitespace
         stripped_string = res.strip('[] \n')
         lines = stripped_string.split('\n')
@@ -88,7 +86,6 @@ def handle_faulty_response_format(res):
 
         return parsed_list
         
-    print("handle faulty response attempted")
     return res_list
 
 
@@ -128,9 +125,6 @@ def retrieve_and_return(image_descriptions_file, retrieval_prompt, api_key, filt
     except SyntaxError:
         print("SyntaxError: The response string contains a syntax error.")
         formatted_output = handle_faulty_response_format(res)
-        print(type(res), res)
-        print("NEW OUT")
-        print(formatted_output)
 
         if type(formatted_output) == list: #TODO: needed?
             output_images = []
@@ -140,7 +134,6 @@ def retrieve_and_return(image_descriptions_file, retrieval_prompt, api_key, filt
 
     print(f"RESPONSE RECEIVED in {round(req_stop_time - req_start_time, 2)}s")
     if type(output_images) == str:
-        print('got output as string instead of list')
         output_images = [output_images]
 
     #store to logs

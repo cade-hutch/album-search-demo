@@ -43,7 +43,6 @@ def send_request(prompt):
             output_image_names = retrieve_and_return(json_file_path, prompt, st.session_state.user_openai_api_key)
             end_t = time.perf_counter()
 
-            print('output images list:', output_image_names)
             retrieve_time = format(end_t - start_t, '.2f')
 
             st.session_state.history.append(('text', f"Found {len(output_image_names)} images in {retrieve_time} seconds"))
