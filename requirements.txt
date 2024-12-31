@@ -2,7 +2,6 @@ tiktoken
 faiss-cpu==1.7.4
 firebase-admin==6.5.0
 langchain==0.3.13
-langchain-community==0.0.32
 langchain-core==0.3.28
 langchain-openai==0.2.14
 langchain-text-splitters==0.3.4
