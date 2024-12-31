@@ -5,7 +5,7 @@ import faiss
 from datetime import datetime
 import numpy as np
 
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 MAIN_DIR = os.path.dirname(os.path.realpath(__file__))
 EMBEDDINGS_DIR = os.path.join(MAIN_DIR, 'embeddings')
